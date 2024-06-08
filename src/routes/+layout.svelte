@@ -35,7 +35,7 @@
 
 <Drawer rounded="none">
 	<div class="w-full h-full flex flex-col justify-center items-center space-y-5">
-		<p>Theres nothing here yet.</p>
+		<p>There's nothing here yet.</p>
 		<button
 			on:click={closeDrawer}
 			type="button"
@@ -47,7 +47,7 @@
 
 <div class="flex flex-col h-screen">
 	<AppBar />
-	<div class="flex-grow p-6 container mx-auto flex justify-center items-center">
+	<div class="flex-grow flex justify-center items-center p-6 w-full overflow-y-auto">
 		<slot />
 	</div>
 </div>

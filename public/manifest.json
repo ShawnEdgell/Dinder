@@ -1,0 +1,9 @@
+{
+	"name": "Dinder",
+	"short_name": "Dinder",
+	"description": "Your App Description",
+	"start_url": "/",
+	"display": "standalone",
+	"theme_color": "#ffffff",
+	"background_color": "#ffffff"
+}
