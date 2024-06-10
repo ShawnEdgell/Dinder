@@ -1,4 +1,4 @@
-<div class="flex flex-col h-full w-full max-w-md justify-between">
+<div class="flex flex-col h-full w-full max-w-md">
 	<div class="space-y-5 w-full">
 		<div class="card shadow-lg rounded-2xl mb-6">
 			<header class="card-header">
@@ -12,7 +12,7 @@
 				<a
 					href="/recipe"
 					type="button"
-					class="btn mb-2 variant-filled-primary"
+					class="btn btn-lg mb-2 variant-filled-primary"
 					data-sveltekit-preload-data="hover">View Recipe</a
 				>
 			</footer>

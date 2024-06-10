@@ -39,15 +39,15 @@
 		<button
 			on:click={closeDrawer}
 			type="button"
-			class="btn variant-filled w-32"
+			class="btn btn-lg variant-filled w-32"
 			data-sveltekit-preload-data="hover">Close Drawer</button
 		>
 	</div>
 </Drawer>
 
-<div class="flex flex-col h-screen">
+<div class="flex flex-col h-screen overflow-hidden">
 	<AppBar />
-	<div class="flex-grow flex justify-center items-center p-6 w-full overflow-y-auto">
+	<div class="flex-grow flex justify-center items-center p-6 overflow-y-auto">
 		<slot />
 	</div>
 </div>

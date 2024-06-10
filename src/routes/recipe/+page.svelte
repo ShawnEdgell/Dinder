@@ -1,4 +1,4 @@
-<div class="flex flex-col h-full w-full max-w-lg justify-between">
+<div class="flex flex-col h-full w-full max-w-lg">
 	<div class="space-y-5 w-full">
 		<h1 class="h1">Recipe</h1>
 		<p>
@@ -17,7 +17,7 @@
 		<a
 			href="/"
 			type="button"
-			class="btn btn-xl variant-filled w-32"
+			class="btn btn-xl variant-filled w-32 mt-6"
 			data-sveltekit-preload-data="hover">Home</a
 		>
 	</div>
