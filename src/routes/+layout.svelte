@@ -1,12 +1,9 @@
 <script lang="ts">
 	import '../app.postcss';
 	import AppBar from '$lib/components/AppBar.svelte';
-	import { initializeStores, Drawer, getDrawerStore } from '@skeletonlabs/skeleton';
+	import { initializeStores } from '@skeletonlabs/skeleton';
 
 	initializeStores();
-
-	// Initialize the drawer store
-	const drawerStore = getDrawerStore();
 
 	// Highlight JS
 	import hljs from 'highlight.js/lib/core';
@@ -27,27 +24,13 @@
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
 	import { storePopup } from '@skeletonlabs/skeleton';
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
-
-	function closeDrawer() {
-		drawerStore.close();
-	}
 </script>
 
-<Drawer rounded="none">
-	<div class="w-full h-full flex flex-col justify-center items-center space-y-5">
-		<p>There's nothing here yet.</p>
-		<button
-			on:click={closeDrawer}
-			type="button"
-			class="btn btn-lg variant-filled w-32"
-			data-sveltekit-preload-data="hover">Close Drawer</button
-		>
+<div class="h-full w-full flex flex-col items-center">
+	<div class="sticky top-0 w-full">
+		<AppBar />
 	</div>
-</Drawer>
-
-<div class="flex flex-col h-screen overflow-hidden">
-	<AppBar />
-	<div class="flex-grow flex justify-center items-center p-6 overflow-y-auto">
+	<div class="flex-1 w-full max-w-lg flex flex-col justify-center items-center p-4">
 		<slot />
 	</div>
 </div>
