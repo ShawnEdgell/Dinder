@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
+	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import type { Recipe } from '../types';
-	import Hammer from 'hammerjs';
 
 	const recipe = writable<Recipe | null>(null);
 	const error = writable<string | null>(null);
+	const isFavorited = writable<boolean>(false);
 
 	async function fetchRecipe() {
 		try {
@@ -14,7 +14,6 @@
 				throw new Error('API key is missing');
 			}
 			const apiUrl = `https://api.spoonacular.com/recipes/random?apiKey=${apiKey}&tags=dinner`;
-			console.log('API URL:', apiUrl); // Log the API URL for debugging
 
 			const response = await fetch(apiUrl);
 
@@ -27,62 +26,59 @@
 			}
 
 			const data = await response.json();
-			console.log('API Response:', data); // Log the API response for debugging
 
 			if (data.recipes && data.recipes.length > 0) {
-				recipe.set(data.recipes[0]);
+				const currentRecipe = data.recipes[0];
+				recipe.set(currentRecipe);
 				error.set(null);
+				isFavorited.set(checkIfFavorited(currentRecipe));
 			} else {
 				throw new Error('No recipes found');
 			}
 		} catch (err) {
 			if (err instanceof Error) {
-				console.error('Error fetching recipe:', err.message);
 				error.set(err.message);
 			} else {
-				console.error('Unknown error', err);
 				error.set('An unknown error occurred');
 			}
 		}
 	}
 
-	function saveRecipe() {
+	function checkIfFavorited(currentRecipe: Recipe) {
+		const savedRecipes = JSON.parse(localStorage.getItem('favorites') || '[]');
+		return savedRecipes.some(
+			(r: { title: string; url: string }) => r.url === currentRecipe.sourceUrl
+		);
+	}
+
+	function toggleFavorite() {
 		recipe.subscribe((currentRecipe) => {
 			if (currentRecipe) {
 				const savedRecipes = JSON.parse(localStorage.getItem('favorites') || '[]');
-				const newRecipe = {
-					title: currentRecipe.title,
-					url: currentRecipe.sourceUrl
-				};
-				savedRecipes.push(newRecipe);
-				localStorage.setItem('favorites', JSON.stringify(savedRecipes));
-				fetchRecipe(); // Fetch the next recipe after saving
+				const isAlreadyFavorited = savedRecipes.some(
+					(r: { url: string }) => r.url === currentRecipe.sourceUrl
+				);
+				if (isAlreadyFavorited) {
+					const updatedRecipes = savedRecipes.filter(
+						(r: { url: string }) => r.url !== currentRecipe.sourceUrl
+					);
+					localStorage.setItem('favorites', JSON.stringify(updatedRecipes));
+					isFavorited.set(false);
+				} else {
+					const newRecipe = {
+						title: currentRecipe.title,
+						url: currentRecipe.sourceUrl
+					};
+					savedRecipes.push(newRecipe);
+					localStorage.setItem('favorites', JSON.stringify(savedRecipes));
+					isFavorited.set(true);
+				}
 			}
 		})();
 	}
 
 	onMount(() => {
 		fetchRecipe();
-
-		const card = document.querySelector('.swipe-card') as HTMLElement;
-		if (card) {
-			const hammer = new Hammer(card);
-			hammer.on('swipeleft swiperight', () => {
-				fetchRecipe();
-			});
-
-			return () => {
-				hammer.off('swipeleft swiperight');
-			};
-		}
-	});
-
-	onDestroy(() => {
-		const card = document.querySelector('.swipe-card') as HTMLElement;
-		if (card) {
-			const hammer = new Hammer(card);
-			hammer.off('swipeleft swiperight');
-		}
 	});
 </script>
 
@@ -92,7 +88,7 @@
 			<p>{$error}</p>
 		</div>
 	{:else if $recipe}
-		<div class="card shadow-lg rounded-2xl mb-6 swipe-card">
+		<div class="card shadow-lg rounded-2xl mb-6">
 			<header class="card-header">
 				<img src={$recipe.image} alt={$recipe.title} class="rounded-2xl w-full h-auto" />
 			</header>
@@ -103,9 +99,13 @@
 				<button
 					type="button"
 					class="btn btn-lg mb-2 font-bold variant-filled-primary"
-					on:click={saveRecipe}
+					on:click={toggleFavorite}
 				>
-					❤️
+					{#if $isFavorited}
+						❤️
+					{:else}
+						🤍
+					{/if}
 				</button>
 				<a
 					href={$recipe.sourceUrl}
@@ -141,10 +141,6 @@
 </div>
 
 <style>
-	.swipe-card {
-		touch-action: pan-y;
-	}
-
 	.btn svg {
 		width: 1.25rem; /* Adjust the size as needed */
 		height: 1.25rem; /* Adjust the size as needed */

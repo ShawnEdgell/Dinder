@@ -1,13 +1,5 @@
 <script lang="ts">
-	import { AppBar, LightSwitch, getDrawerStore } from '@skeletonlabs/skeleton';
-
-	// Initialize the drawer store
-	const drawerStore = getDrawerStore();
-
-	// Function to open the drawer
-	function openDrawer() {
-		drawerStore.open();
-	}
+	import { AppBar, LightSwitch } from '@skeletonlabs/skeleton';
 </script>
 
 <AppBar
