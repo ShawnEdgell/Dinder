@@ -5,16 +5,24 @@
 	import Hammer from 'hammerjs';
 
 	const recipe = writable<Recipe | null>(null);
+	const error = writable<string | null>(null);
 
 	async function fetchRecipe() {
 		try {
 			const apiKey = import.meta.env.VITE_SPOONACULAR_API_KEY;
+			if (!apiKey) {
+				throw new Error('API key is missing');
+			}
 			const apiUrl = `https://api.spoonacular.com/recipes/random?apiKey=${apiKey}&tags=dinner`;
 			console.log('API URL:', apiUrl); // Log the API URL for debugging
 
 			const response = await fetch(apiUrl);
 
 			if (!response.ok) {
+				if (response.status === 402) {
+					// Assuming 402 is the status code for quota exceeded
+					throw new Error('API quota exceeded. Please check back later.');
+				}
 				throw new Error(`Failed to fetch recipe: ${response.statusText}`);
 			}
 
@@ -23,11 +31,18 @@
 
 			if (data.recipes && data.recipes.length > 0) {
 				recipe.set(data.recipes[0]);
+				error.set(null);
 			} else {
 				throw new Error('No recipes found');
 			}
-		} catch (error) {
-			console.error('Error fetching recipe:', error);
+		} catch (err) {
+			if (err instanceof Error) {
+				console.error('Error fetching recipe:', err.message);
+				error.set(err.message);
+			} else {
+				console.error('Unknown error', err);
+				error.set('An unknown error occurred');
+			}
 		}
 	}
 
@@ -52,7 +67,7 @@
 		const card = document.querySelector('.swipe-card') as HTMLElement;
 		if (card) {
 			const hammer = new Hammer(card);
-			hammer.on('swipeleft swiperight', (event: HammerInput) => {
+			hammer.on('swipeleft swiperight', () => {
 				fetchRecipe();
 			});
 
@@ -72,7 +87,11 @@
 </script>
 
 <div class="space-y-5 w-full flex flex-col items-center">
-	{#if $recipe}
+	{#if $error}
+		<div class="text-red-500 text-center p-4">
+			<p>{$error}</p>
+		</div>
+	{:else if $recipe}
 		<div class="card shadow-lg rounded-2xl mb-6 swipe-card">
 			<header class="card-header">
 				<img src={$recipe.image} alt={$recipe.title} class="rounded-2xl w-full h-auto" />
