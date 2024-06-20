@@ -26,7 +26,7 @@
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 </script>
 
-<div class="h-full w-full flex flex-col items-center">
+<div class="h-screen w-full flex flex-col items-center">
 	<div class="sticky top-0 w-full">
 		<AppBar />
 	</div>
