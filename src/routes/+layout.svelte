@@ -1,7 +1,7 @@
 <script lang="ts">
 	import '../app.postcss';
 	import AppBar from '$lib/components/AppBar.svelte';
-	import { initializeStores } from '@skeletonlabs/skeleton';
+	import { AppShell, initializeStores } from '@skeletonlabs/skeleton';
 
 	initializeStores();
 
@@ -26,11 +26,18 @@
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 </script>
 
-<div class="h-screen w-full flex flex-col items-center">
-	<div class="sticky top-0 w-full">
+<AppShell>
+	<svelte:fragment slot="header">
 		<AppBar />
-	</div>
-	<div class="flex-1 w-full max-w-lg flex flex-col justify-center items-center p-4">
+	</svelte:fragment>
+	<!-- (sidebarLeft) -->
+	<!-- (sidebarRight) -->
+	<!-- (pageHeader) -->
+	<!-- Router Slot -->
+	<div class="h-full flex flex-col justify-center items-center p-4">
 		<slot />
 	</div>
-</div>
+	<!-- ---- / ---- -->
+	<!-- (pageFooter) -->
+	<!-- (footer) -->
+</AppShell>
