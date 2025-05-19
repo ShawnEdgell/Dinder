@@ -1,43 +1,34 @@
 <script lang="ts">
-	import '../app.postcss';
-	import AppBar from '$lib/components/AppBar.svelte';
-	import { AppShell, initializeStores } from '@skeletonlabs/skeleton';
-
-	initializeStores();
-
-	// Highlight JS
-	import hljs from 'highlight.js/lib/core';
-	import 'highlight.js/styles/github-dark.css';
-	import { storeHighlightJs } from '@skeletonlabs/skeleton';
-	import xml from 'highlight.js/lib/languages/xml'; // for HTML
-	import css from 'highlight.js/lib/languages/css';
-	import javascript from 'highlight.js/lib/languages/javascript';
-	import typescript from 'highlight.js/lib/languages/typescript';
-
-	hljs.registerLanguage('xml', xml); // for HTML
-	hljs.registerLanguage('css', css);
-	hljs.registerLanguage('javascript', javascript);
-	hljs.registerLanguage('typescript', typescript);
-	storeHighlightJs.set(hljs);
-
-	// Floating UI for Popups
-	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
-	import { storePopup } from '@skeletonlabs/skeleton';
-	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
+	import '../app.css'; // Your Tailwind base styles
+	// Removed: import { page } from '$app/stores'; // Not used in this minimal layout
 </script>
 
-<AppShell>
-	<svelte:fragment slot="header">
-		<AppBar />
-	</svelte:fragment>
-	<!-- (sidebarLeft) -->
-	<!-- (sidebarRight) -->
-	<!-- (pageHeader) -->
-	<!-- Router Slot -->
-	<div class="h-full flex flex-col justify-center items-center p-4">
-		<slot />
-	</div>
-	<!-- ---- / ---- -->
-	<!-- (pageFooter) -->
-	<!-- (footer) -->
-</AppShell>
+<div
+	class="flex min-h-screen flex-col bg-gradient-to-br from-slate-900 to-slate-800 text-slate-100"
+>
+	<header class="sticky top-0 z-50 bg-slate-800/80 p-4 shadow-md backdrop-blur-md">
+		<nav class="container mx-auto flex items-center justify-between">
+			<a href="/" class="text-2xl font-bold text-rose-500 transition-colors hover:text-rose-400"
+				>Dinder</a
+			>
+			<div class="space-x-2">
+				<a
+					href="/"
+					class="rounded-md px-3 py-2 text-sm transition-colors hover:bg-slate-700 sm:text-base"
+					>Discover</a
+				>
+				<a
+					href="/favorites"
+					class="rounded-md px-3 py-2 text-sm transition-colors hover:bg-slate-700 sm:text-base"
+					>Favorites</a
+				>
+			</div>
+		</nav>
+	</header>
+
+	<main class="flex-grow"><slot /></main>
+
+	<footer class="mt-auto border-t border-slate-700 p-4 text-center text-sm text-slate-500">
+		Dinder &copy; {new Date().getFullYear()}
+	</footer>
+</div>
